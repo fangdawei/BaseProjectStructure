@@ -1,0 +1,11 @@
+<resources>
+  <!-- 通用 -->
+  <string name="confirm">确定</string>
+  <string name="cancel">取消</string>
+  <string name="finish">完成</string>
+
+  <string name="sdcard_not_find">没有发现SD卡~</string>
+
+  <!-- 主页 -->
+
+</resources>

@@ -1,0 +1,14 @@
+ext {
+  app = [
+      applicationId     : "com.david.baseprojectstructure",
+      versionCode       : 1,
+      versionName       : "1.0",
+      appName_en        : "BaseProjectStructureDemo",
+      appName_zh        : "项目基础框架"
+  ]
+
+  host = [
+      debugHost     : '""',
+      releaseHost   : '""'
+  ]
+}
