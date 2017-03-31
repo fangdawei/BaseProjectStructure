@@ -10,7 +10,8 @@ import android.view.View;
  * Created by david on 2017/3/28.
  */
 
-public abstract class BaseBindingActivity<T extends ViewDataBinding> extends BaseActivity {
+public abstract class BaseBindingActivity<T extends ViewDataBinding>
+    extends BaseActivity {
 
   protected T mVDB;
 
@@ -26,15 +27,15 @@ public abstract class BaseBindingActivity<T extends ViewDataBinding> extends Bas
 
   @Override protected View createContentView(Bundle savedInstanceState) {
     mVDB = createViewDataBinding(savedInstanceState);
-    if(mVDB == null){
-      return  null;
+    if (mVDB == null) {
+      return null;
     } else {
       return mVDB.getRoot();
     }
   }
 
   @Override protected void onDestroy() {
-    if(mVDB != null){
+    if (mVDB != null) {
       mVDB.unbind();
     }
 

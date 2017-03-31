@@ -13,7 +13,8 @@ import com.david.baseprojectstructure.databinding.ActivityBaseBinding;
  * Created by david on 2017/3/16.
  */
 
-public abstract class BaseActivity extends AppCompatActivity implements IActivity {
+public abstract class BaseActivity
+    extends AppCompatActivity implements IActivity {
 
   private ActivityBaseBinding baseVDB;
 
@@ -22,12 +23,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IActivit
     /** 开始加载布局 **/
     baseVDB = DataBindingUtil.setContentView(this, R.layout.activity_base);
     View toolBarView = createToolBar(savedInstanceState);
-    if(toolBarView != null){
-      baseVDB.contentRoot.addView(toolBarView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    if (toolBarView != null) {
+      baseVDB.contentRoot.addView(toolBarView,
+          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
     View contentView = createContentView(savedInstanceState);
-    if(contentView != null){
-      baseVDB.contentRoot.addView(contentView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    if (contentView != null) {
+      baseVDB.contentRoot.addView(contentView,
+          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
     /** 加载布局结束 **/
     preInit(savedInstanceState);
@@ -36,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IActivit
     initData();
   }
 
-  protected void preInit(Bundle savedInstanceState){
+  protected void preInit(Bundle savedInstanceState) {
 
   }
 
