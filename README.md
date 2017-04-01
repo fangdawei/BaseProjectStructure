@@ -18,13 +18,14 @@ public interface IActivity {
   void initData();
 }
 ```
-BaseActivity是项目中几乎所有的Activity的父类，它的功能主要是封装了ActionBar，使得继承自它的Activity可以很方便地创建包含或者不包含ActionBar的Activity(这里ActionBar是使用ToolBar实现的)。这里有一个例外，就是SplashActivity，它并没有继承BaseActivity，而是直接继承自AppCompatActivity。
+BaseActivity是项目中几乎所有的Activity的父类，它的功能主要是封装了ActionBar，使得继承自它的Activity可以很方便地创建包含或者不包含ActionBar的Activity(这里ActionBar是使用ToolBar实现的)。同时为了适应Android6.0之后的动态权限，封装了权限的动态申请功能。这里有一个例外，就是SplashActivity，它并没有继承BaseActivity，而是直接继承自AppCompatActivity。
 
 ```java
 public abstract class BaseActivity
     extends AppCompatActivity implements IActivity {
 
   private ActivityBaseBinding baseVDB;
+  private Map<Integer, PermissionListener> permissionListenerMap = new HashMap<>();
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -51,9 +52,53 @@ public abstract class BaseActivity
 
   }
 
+  protected void requestPermission(String permisson,
+      PermissionListener listener, int requestCode) {
+    if (PackageManager.PERMISSION_GRANTED ==
+        ContextCompat.checkSelfPermission(this, permisson)) {
+      if (listener != null) {
+        listener.onGranted();
+      }
+    } else {
+      boolean hasDenited = ActivityCompat
+          .shouldShowRequestPermissionRationale(this, permisson);
+      if (!hasDenited) {
+        permissionListenerMap.put(requestCode, listener);
+        ActivityCompat.requestPermissions(this,
+            new String[] { permisson }, requestCode);
+      } else {
+        if (listener != null) {
+          listener.onNotAsk();
+        }
+      }
+    }
+  }
+
+  @Override public void onRequestPermissionsResult(int requestCode,
+      @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    int result = grantResults[0];
+    PermissionListener listener = permissionListenerMap.get(requestCode);
+    if (PackageManager.PERMISSION_GRANTED == result) {
+      if (listener != null) {
+        listener.onGranted();
+      }
+    } else {
+      if (listener != null) {
+        listener.onDenited();
+      }
+    }
+  }
+
   protected abstract View createToolBar(Bundle savedInstanceState);
 
   protected abstract View createContentView(Bundle savedInstanceState);
+
+  interface PermissionListener {
+    void onGranted();//权限请求被允许
+    void onDenited();//权限请求被拒绝
+    void onNotAsk();//不再请求
+  }
 }
 ```
 BaseBindingActivity对DataBing进行了一些封装，提供的最大便利就是再也不用大量地使用findViewById来获取View对象了。
