@@ -12,34 +12,27 @@
 IActivity以接口的方式抽象了Activity初始化的一些通用的方法(可能还可以加入一些其他的方法，根据需要添加即可)
 
 ``` java
-public interface IActivity {
-  void initView();
-  void initListener();
-  void initData();
-}
-```
-BaseActivity是项目中几乎所有的Activity的父类，它的功能主要是封装了ActionBar，使得继承自它的Activity可以很方便地创建包含或者不包含ActionBar的Activity(这里ActionBar是使用ToolBar实现的)。同时为了适应Android6.0之后的动态权限，封装了权限的动态申请功能。这里有一个例外，就是SplashActivity，它并没有继承BaseActivity，而是直接继承自AppCompatActivity。
-
-```java
-public abstract class BaseActivity
-    extends AppCompatActivity implements IActivity {
+public abstract class BaseActivity extends AppCompatActivity
+    implements IActivity {
 
   private ActivityBaseBinding baseVDB;
-  private Map<Integer, PermissionListener> permissionListenerMap = new HashMap<>();
+  private Map<Integer, PermissionListener> permissionListenerMap =
+      new HashMap<>();
+  private AtomicInteger requestCodeNumber = new AtomicInteger(0);
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     /** 开始加载布局 **/
     baseVDB = DataBindingUtil.setContentView(this, R.layout.activity_base);
-    View toolBarView = createToolBar(savedInstanceState);
+    View toolBarView = createToolBar(savedInstanceState,
+        baseVDB.toolbarContainer);
     if (toolBarView != null) {
-      baseVDB.contentRoot.addView(toolBarView,
-          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      baseVDB.toolbarContainer.addView(toolBarView);
     }
-    View contentView = createContentView(savedInstanceState);
+    View contentView = createContentView(savedInstanceState,
+        baseVDB.contentContainer);
     if (contentView != null) {
-      baseVDB.contentRoot.addView(contentView,
-          ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      baseVDB.contentContainer.addView(contentView);
     }
     /** 加载布局结束 **/
     preInit(savedInstanceState);
@@ -48,24 +41,39 @@ public abstract class BaseActivity
     initData();
   }
 
+  /**
+   * 在执行init(initView、initListener、initData)之前执行
+   */
   protected void preInit(Bundle savedInstanceState) {
 
   }
 
-  protected void requestPermission(String permisson,
-      PermissionListener listener, int requestCode) {
+  /**
+   * 创建ToolBar的View
+   */
+  protected abstract View createToolBar(Bundle savedInstanceState,
+      ViewGroup container);
+
+  /**
+   * 创建页面主要内容View
+   */
+  protected abstract View createContentView(Bundle savedInstanceState,
+      ViewGroup container);
+
+  public void requestPermission(String permisson, PermissionListener listener) {
     if (PackageManager.PERMISSION_GRANTED ==
         ContextCompat.checkSelfPermission(this, permisson)) {
       if (listener != null) {
         listener.onGranted();
       }
     } else {
-      boolean hasDenited = ActivityCompat
-          .shouldShowRequestPermissionRationale(this, permisson);
+      boolean hasDenited =
+          ActivityCompat.shouldShowRequestPermissionRationale(this, permisson);
       if (!hasDenited) {
+        int requestCode = requestCodeNumber.getAndIncrement();
         permissionListenerMap.put(requestCode, listener);
-        ActivityCompat.requestPermissions(this,
-            new String[] { permisson }, requestCode);
+        ActivityCompat.requestPermissions(this, new String[] { permisson }, 
+            requestCode);
       } else {
         if (listener != null) {
           listener.onNotAsk();
@@ -88,15 +96,17 @@ public abstract class BaseActivity
         listener.onDenited();
       }
     }
+    permissionListenerMap.remove(requestCode);
   }
 
-  protected abstract View createToolBar(Bundle savedInstanceState);
-
-  protected abstract View createContentView(Bundle savedInstanceState);
-
-  interface PermissionListener {
+  /**
+   * 权限申请结果监听器
+   */
+  public interface PermissionListener {
     void onGranted();//权限请求被允许
+
     void onDenited();//权限请求被拒绝
+
     void onNotAsk();//不再请求
   }
 }
@@ -109,27 +119,30 @@ public abstract class BaseBindingActivity<T extends ViewDataBinding>
 
   protected T mVDB;
 
-  protected abstract T createViewDataBinding(Bundle savedInstanceState);
+  protected abstract T createViewDataBinding(Bundle savedInstanceState,
+      ViewGroup container);
 
   @Override protected void preInit(Bundle savedInstanceState) {
 
   }
 
-  @Override protected View createToolBar(Bundle savedInstanceState) {
+  @Override protected View createToolBar(Bundle savedInstanceState,
+      ViewGroup container) {
     return null;
   }
 
-  @Override protected View createContentView(Bundle savedInstanceState) {
-    mVDB = createViewDataBinding(savedInstanceState);
-    if (mVDB == null) {
-      return null;
+  @Override protected View createContentView(Bundle savedInstanceState,
+      ViewGroup container) {
+    mVDB = createViewDataBinding(savedInstanceState, container);
+    if(mVDB == null){
+      return  null;
     } else {
       return mVDB.getRoot();
     }
   }
 
   @Override protected void onDestroy() {
-    if (mVDB != null) {
+    if(mVDB != null){
       mVDB.unbind();
     }
 

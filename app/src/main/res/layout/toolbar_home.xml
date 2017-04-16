@@ -1,19 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-  <android.support.v7.widget.Toolbar
+  <RelativeLayout
       android:id="@+id/toolbar"
+      android:background="#ffffff"
       style="@style/Toolbar"
       >
+    <LinearLayout
+        android:id="@+id/menu_back"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        >
+      <ImageView
+          android:layout_width="15dp"
+          android:layout_height="20dp"
+          android:layout_alignParentLeft="true"
+          android:layout_centerVertical="true"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          />
+    </LinearLayout>
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|center_vertical"
+        android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="title"
-        android:textColor="@color/white"
-        android:textSize="18sp"
+        android:text="首页"
+        android:textColor="#FF1A2026"
+        android:textSize="17sp"
         />
-  </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:id="@+id/menu_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        >
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:clickable="true"
+          android:gravity="center"
+          android:text=""
+          android:textColor="#FFB8B9BF"
+          android:textSize="15sp"
+          />
+    </LinearLayout>
+  </RelativeLayout>
 
 </layout>
