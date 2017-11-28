@@ -12,4 +12,6 @@
 IActivity以接口的方式抽象了Activity初始化的一些通用的方法(可能还可以加入一些其他的方法，根据需要添加即可)
 BaseBindingActivity对DataBing进行了一些封装，提供的最大便利就是再也不用大量地使findViewById来获取View对象了。
 对Fragment的封装与Activity的类似。
+对RxJava和Retrofit也配合MVP进行了封装，将Observable封装成ObservableWrapper使用，以方便的在Activity和Fragment生命周期结束时取消所有请求。
+
 
