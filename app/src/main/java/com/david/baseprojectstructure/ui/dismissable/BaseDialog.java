@@ -1,4 +1,4 @@
-package com.david.baseprojectstructure.widget;
+package com.david.baseprojectstructure.ui.dismissable;
 
 import android.app.Dialog;
 import android.content.Context;

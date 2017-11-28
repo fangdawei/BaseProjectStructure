@@ -13,20 +13,23 @@ import android.view.ViewGroup;
 
 public abstract class BaseBindingFragment<T extends ViewDataBinding> extends BaseFragment {
 
-  protected T mVDB;
+  protected T mContent;
 
   protected abstract T createBinding(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
-  @Nullable @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-    mVDB = createBinding(inflater, container, savedInstanceState);
-    return super.onCreateView(inflater, container, savedInstanceState);
+  @Nullable @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    if (mContent == null) {
+      mContent = createBinding(inflater, container, savedInstanceState);
+    }
+    return mContent != null ? mContent.getRoot() : null;
   }
 
   @Override public void onDestroy() {
-    if(mVDB != null){
-      mVDB.unbind();
+    if (mContent != null) {
+      mContent.unbind();
+      mContent = null;
     }
-
     super.onDestroy();
   }
 }

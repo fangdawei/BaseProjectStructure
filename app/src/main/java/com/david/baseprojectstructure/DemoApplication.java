@@ -1,8 +1,8 @@
 package com.david.baseprojectstructure;
 
 import android.app.Application;
-import com.david.baseprojectstructure.manager.FileManager;
-import com.david.baseprojectstructure.manager.ValueManager;
+import com.david.baseprojectstructure.common.FileManager;
+import com.david.baseprojectstructure.common.ValueManager;
 
 /**
  * Created by david on 2017/3/16.

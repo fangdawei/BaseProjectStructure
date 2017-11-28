@@ -8,4 +8,5 @@ public interface IActivity {
   void initView();
   void initListener();
   void initData();
+  void release();
 }

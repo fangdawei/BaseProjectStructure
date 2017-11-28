@@ -6,6 +6,10 @@ package com.david.baseprojectstructure.ui.fragment;
 
 public interface IFragment {
   void initView();
+
   void initListener();
+
   void initData();
+
+  void release();
 }

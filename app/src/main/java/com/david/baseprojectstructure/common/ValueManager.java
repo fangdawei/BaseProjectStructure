@@ -1,4 +1,4 @@
-package com.david.baseprojectstructure.manager;
+package com.david.baseprojectstructure.common;
 
 import android.content.Context;
 

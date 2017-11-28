@@ -19,7 +19,15 @@ import javax.inject.Singleton;
     this.view = view;
   }
 
-  @Provides @Singleton HomeContract.Presenter providesPresenter() {
-    return new HomePresenter(view, new HomeModel());
+  @Provides @Singleton HomeContract.Model provideModel() {
+    return new HomeModel();
+  }
+
+  @Provides @Singleton HomeContract.View provideView() {
+    return view;
+  }
+
+  @Provides @Singleton HomeContract.Presenter providePresenter(HomeContract.View view, HomeContract.Model model) {
+    return new HomePresenter(view, model);
   }
 }
