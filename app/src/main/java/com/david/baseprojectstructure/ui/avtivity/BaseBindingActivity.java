@@ -22,14 +22,6 @@ public abstract class BaseBindingActivity extends BaseActivity {
     if (toolBarView != null) {
       mRoot.toolbarContainer.addView(toolBarView);
     }
-    if (isStatusBarSuspension()) {
-      mRoot.toolbarContainer.setPadding(0, 0, 0, 0);
-    } else {
-      int statusBarHeight = getStatusBarHeight();
-      mRoot.toolbarContainer.setPadding(0, statusBarHeight, 0, 0);
-      int statusBarColor = getStatusBarColor();
-      mRoot.toolbarContainer.setBackgroundColor(statusBarColor);
-    }
     View contentView = createContentView(savedInstanceState, mRoot.contentContainer);
     if (contentView != null) {
       mRoot.contentContainer.addView(contentView);

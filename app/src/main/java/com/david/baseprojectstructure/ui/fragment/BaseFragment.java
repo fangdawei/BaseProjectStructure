@@ -46,14 +46,6 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment
 
   }
 
-  protected void hideBottomUiMenu() {
-    Activity activity = getActivity();
-    if (activity instanceof BaseActivity) {
-      final BaseActivity host = (BaseActivity) activity;
-      getView().postDelayed(() -> host.hideBottomUiMenu(), 500);
-    }
-  }
-
   public BaseActivity getBaseActivity() {
     Activity activity = getActivity();
     if (activity instanceof BaseActivity) {

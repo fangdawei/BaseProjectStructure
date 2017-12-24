@@ -13,8 +13,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
-import com.david.baseprojectstructure.R;
 import com.david.baseprojectstructure.common.Logger;
 import com.david.baseprojectstructure.common.Toaster;
 import com.david.baseprojectstructure.mvp.DisposableWatcher;
@@ -45,8 +43,6 @@ public abstract class BaseActivity extends AppCompatActivity
 
     preSetContentView();
 
-    initStatusBar();
-
     /** 开始创建视图 **/
     Logger.d(getClass().getSimpleName(), "activity create view start");
     View contentView = createView(savedInstanceState);
@@ -66,43 +62,6 @@ public abstract class BaseActivity extends AppCompatActivity
 
   @Override protected void onResume() {
     super.onResume();
-    if (isHideBottomUiMenu()) {
-      hideBottomUiMenu();
-    }
-  }
-
-  private void initStatusBar() {
-    int visibility = getWindow().getDecorView().getSystemUiVisibility();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (isLightColor(getStatusBarColor())) {
-        visibility = visibility | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-      } else {
-        visibility = visibility | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-      }
-      getWindow().getDecorView().setSystemUiVisibility(visibility);
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      visibility = visibility | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-      getWindow().getDecorView().setSystemUiVisibility(visibility);
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      visibility = visibility | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-      getWindow().getDecorView().setSystemUiVisibility(visibility);
-      WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
-      localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
-    }
-  }
-
-  public void hideBottomUiMenu() {
-    if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-      getWindow().getDecorView().setSystemUiVisibility(View.GONE);
-    } else if (Build.VERSION.SDK_INT >= 19) {//for new api versions.
-      View decorView = getWindow().getDecorView();
-      int uiOptions = decorView.getSystemUiVisibility()
-          | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-          | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-          | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-      decorView.setSystemUiVisibility(uiOptions);
-      getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-    }
   }
 
   private boolean isLightColor(int color) {
@@ -112,25 +71,6 @@ public abstract class BaseActivity extends AppCompatActivity
     } else {
       return false; // It's a dark color
     }
-  }
-
-  protected boolean isHideBottomUiMenu() {
-    return true;
-  }
-
-  protected boolean isStatusBarSuspension() {
-    return false;
-  }
-
-  protected int getStatusBarColor() {
-    return getResources().getColor(R.color.colorPrimary);
-  }
-
-  protected int getStatusBarHeight() {
-    int statusBarHeight;
-    int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-    statusBarHeight = getResources().getDimensionPixelSize(resourceId);
-    return statusBarHeight;
   }
 
   /**
